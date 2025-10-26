@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit Conversion Tool</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #0d47a1;
+      padding: 20px 10px;
+      background: #e3f2fd;
+      margin: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .converter {
+      background: #fff;
+      padding: 25px;
+      margin: 30px auto;
+      max-width: 500px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+    .converter:hover {
+      transform: translateY(-3px);
+    }
+    h2 {
+      color: #1565c0;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #90caf9;
+      border-radius: 6px;
+      font-size: 15px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: #1565c0;
+      outline: none;
+    }
+    button {
+      background: #1976d2;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #0d47a1;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: 600;
+      color: #0d47a1;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #e0e0e0;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #bbdefb;
+      color: #0d47a1;
+    }
+    tr:nth-child(even) {
+      background-color: #f5f9ff;
+    }
+    @media (max-width: 600px) {
+      .converter {
+        margin: 20px;
+        padding: 20px;
+      }
+      h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Unit Conversion Tool</h1>
+
+<!-- Length Conversion -->
+<div class="converter">
+  <h2>Length Conversion (Instant Table)</h2>
+  <label>Enter Value:</label>
+  <input type="number" id="lengthValue" placeholder="Enter value" oninput="updateLengthTable()">
+
+  <label>Unit:</label>
+  <select id="lengthUnit" onchange="updateLengthTable()">
+    <option value="metricLink">Metric Link</option>
+    <option value="gunterLink">Gunter Link</option>
+    <option value="m">Meter</option>
+    <option value="km">Kilometer</option>
+    <option value="cm">Centimeter</option>
+    <option value="mm">Millimeter</option>
+    <option value="ft">Feet</option>
+    <option value="in">Inch</option>
+  </select>
+
+  <div class="result" id="lengthResult"></div>
+</div>
+
+<!-- Area Conversion -->
+<div class="converter">
+  <h2>Area Conversion (Instant Table)</h2>
+  <label>Enter Area Value:</label>
+  <input type="number" id="areaValue" placeholder="Enter value" oninput="updateAreaTable()">
+
+  <label>Unit:</label>
+  <select id="areaUnit" onchange="updateAreaTable()">
+    <option value="m2">Square Meter (m²)</option>
+    <option value="km2">Square Kilometer (km²)</option>
+    <option value="cm2">Square Centimeter (cm²)</option>
+    <option value="ft2">Square Feet (ft²)</option>
+    <option value="in2">Square Inch (in²)</option>
+    <option value="metricLink2">Metric Link²</option>
+    <option value="gunterLink2">Gunter Link²</option>
+    <option value="acre">Acre</option>
+  </select>
+
+  <div class="result" id="areaResult"></div>
+</div>
+
+<!-- Coordinate Conversion -->
+<div class="converter">
+  <h2>Coordinate Conversion (UTM ↔ DMS)</h2>
+  <label>Conversion Type:</label>
+  <select id="coordType">
+    <option value="utmToDMS">UTM → DMS</option>
+    <option value="dmsToUTM">DMS → UTM</option>
+  </select>
+
+  <div id="utmInputs">
+    <label>UTM Easting (m):</label>
+    <input type="number" id="utmEasting" placeholder="Enter Easting">
+    <label>UTM Northing (m):</label>
+    <input type="number" id="utmNorthing" placeholder="Enter Northing">
+    <label>Zone Number:</label>
+    <input type="number" id="utmZone" placeholder="Enter Zone (1-60)">
+    <label>Hemisphere:</label>
+    <select id="utmHemisphere">
+      <option value="N">Northern</option>
+      <option value="S">Southern</option>
+    </select>
+  </div>
+
+  <div id="dmsInputs" style="display:none;">
+    <label>Latitude (° ' "):</label>
+    <input type="text" id="dmsLat" placeholder='e.g. 12°34\'56.7"N'>
+    <label>Longitude (° ' "):</label>
+    <input type="text" id="dmsLon" placeholder='e.g. 78°12\'34.5"E'>
+  </div>
+
+  <button onclick="convertCoordinates()">Convert Coordinates</button>
+  <div class="result" id="coordResult"></div>
+</div>
+
+<script>
+/*----------------- Length Conversion -----------------*/
+const lengthFactors = {
+  metricLink: 0.2,
+  gunterLink: 0.2012,
+  m: 1,
+  km: 1000,
+  cm: 0.01,
+  mm: 0.001,
+  ft: 0.3048,
+  in: 0.0254
+};
+
+function updateLengthTable() {
+  const value = parseFloat(document.getElementById('lengthValue').value);
+  const fromUnit = document.getElementById('lengthUnit').value;
+  if (isNaN(value)) {
+    document.getElementById('lengthResult').innerHTML = '';
+    return;
+  }
+  const valueInMeters = value * lengthFactors[fromUnit];
+  let tableHTML = '<table><tr><th>Unit</th><th>Value</th></tr>';
+  for (let unit in lengthFactors) {
+    const converted = valueInMeters / lengthFactors[unit];
+    tableHTML += `<tr><td>${unit}</td><td>${converted.toFixed(3)}</td></tr>`;
+  }
+  tableHTML += '</table>';
+  document.getElementById('lengthResult').innerHTML = tableHTML;
+}
+
+/*----------------- Area Conversion -----------------*/
+const areaFactors = {
+  m2: 1,
+  km2: 1000000,
+  cm2: 0.0001,
+  ft2: 0.092903,
+  in2: 0.00064516,
+  metricLink2: 0.2 * 0.2,
+  gunterLink2: 0.2012 * 0.2012,
+  acre: 4046.8564224
+};
+
+function updateAreaTable() {
+  const value = parseFloat(document.getElementById('areaValue').value);
+  const fromUnit = document.getElementById('areaUnit').value;
+  if (isNaN(value)) {
+    document.getElementById('areaResult').innerHTML = '';
+    return;
+  }
+  const valueInM2 = value * areaFactors[fromUnit];
+  let tableHTML = '<table><tr><th>Unit</th><th>Value</th></tr>';
+  for (let unit in areaFactors) {
+    const converted = valueInM2 / areaFactors[unit];
+    tableHTML += `<tr><td>${unit}</td><td>${converted.toFixed(3)}</td></tr>`;
+  }
+  tableHTML += '</table>';
+  document.getElementById('areaResult').innerHTML = tableHTML;
+}
+
+/*----------------- Coordinate Conversion -----------------*/
+const coordTypeSelect = document.getElementById('coordType');
+coordTypeSelect.addEventListener('change', function() {
+  const type = this.value;
+  document.getElementById('utmInputs').style.display = type === 'utmToDMS' ? 'block' : 'none';
+  document.getElementById('dmsInputs').style.display = type === 'dmsToUTM' ? 'block' : 'none';
+});
+
+function convertCoordinates() {
+  const type = coordTypeSelect.value;
+  let resultText = '';
+
+  if(type === 'utmToDMS') {
+    const easting = parseFloat(document.getElementById('utmEasting').value);
+    const northing = parseFloat(document.getElementById('utmNorthing').value);
+    const zone = parseInt(document.getElementById('utmZone').value);
+    const hemisphere = document.getElementById('utmHemisphere').value;
+    if(isNaN(easting) || isNaN(northing) || isNaN(zone)) return alert('Enter valid UTM values');
+
+    const latLon = utmToLatLon(easting, northing, zone, hemisphere);
+    resultText = `DMS: Latitude = ${latLon.latDMS}, Longitude = ${latLon.lonDMS}`;
+
+  } else if(type === 'dmsToUTM') {
+    const latStr = document.getElementById('dmsLat').value.trim();
+    const lonStr = document.getElementById('dmsLon').value.trim();
+    if(!latStr || !lonStr) return alert('Enter valid DMS coordinates');
+
+    const lat = dmsToDecimal(latStr);
+    const lon = dmsToDecimal(lonStr);
+    const utm = latLonToUTM(lat, lon);
+    resultText = `UTM: Easting = ${utm.easting.toFixed(2)}, Northing = ${utm.northing.toFixed(2)}, Zone = ${utm.zone}${utm.hemisphere}`;
+  }
+
+  document.getElementById('coordResult').innerText = resultText;
+}
+
+/* Utility Functions */
+function dmsToDecimal(dms) {
+  const parts = dms.match(/(\d+)[°:\s](\d+)[']?(\d+(?:\.\d+)?)?["]?\s*([NSEW])?/i);
+  if(!parts) return NaN;
+  let deg = parseFloat(parts[1]);
+  let min = parseFloat(parts[2]);
+  let sec = parts[3] ? parseFloat(parts[3]) : 0;
+  let dir = parts[4] ? parts[4].toUpperCase() : '';
+  let dec = deg + min/60 + sec/3600;
+  if(dir==='S' || dir==='W') dec = -dec;
+  return dec;
+}
+
+function decimalToDMS(dec, isLat=true) {
+  const dir = isLat ? (dec>=0?'N':'S') : (dec>=0?'E':'W');
+  dec = Math.abs(dec);
+  const deg = Math.floor(dec);
+  const min = Math.floor((dec-deg)*60);
+  const sec = ((dec-deg- min/60)*3600).toFixed(2);
+  return `${deg}°${min}'${sec}"${dir}`;
+}
+
+function utmToLatLon(easting, northing, zone, hemisphere) {
+  const a = 6378137.0; 
+  const e = 0.081819191;
+  const k0 = 0.9996;
+  const x = easting - 500000;
+  let y = northing;
+  if(hemisphere==='S') y -= 10000000;
+  const lon0 = (zone-1)*6 -180 +3;
+  const M = y/k0;
+  const mu = M/(a*(1 - e*e/4 - 3*e*e*e*e/64 -5*e*e*e*e*e*e/256));
+  const e1 = (1 - Math.sqrt(1-e*e))/(1+Math.sqrt(1-e*e));
+  let phi1 = mu + (3*e1/2 - 27*e1*e1*e1/32)*Math.sin(2*mu) + (21*e1*e1/16 -55*e1*e1*e1*e1/32)*Math.sin(4*mu);
+  phi1 += (151*e1*e1*e1/96)*Math.sin(6*mu);
+  const N1 = a/Math.sqrt(1-e*e*Math.sin(phi1)*Math.sin(phi1));
+  const T1 = Math.tan(phi1)*Math.tan(phi1);
+  const C1 = e*e/(1-e*e)*Math.cos(phi1)*Math.cos(phi1);
+  const R1 = a*(1-e*e)/Math.pow(1-e*e*Math.sin(phi1)*Math.sin(phi1),1.5);
+  const D = x/(N1*k0);
+  const lat = phi1 - (N1*Math.tan(phi1)/R1)*(D*D/2 - (5 +3*T1 +10*C1 -4*C1*C1 -9*e*e/(1-e*e))*Math.pow(D,4)/24);
+  const lon = lon0 + (D - (1+2*T1 + C1)*Math.pow(D,3)/6 + (5-2*C1 +28*T1 -3*C1*C1 +8*e*e/(1-e*e) +24*T1*T1)*Math.pow(D,5)/120)/Math.cos(phi1);
+  return {latDMS: decimalToDMS(lat*180/Math.PI,true), lonDMS: decimalToDMS(lon*180/Math.PI,false)};
+}
+
+function latLonToUTM(lat, lon) {
+  const a = 6378137.0;
+  const e = 0.081819191;
+  const k0 = 0.9996;
+  const zone = Math.floor((lon+180)/6) +1;
+  const lon0 = (zone-1)*6 -180 +3;
+  const latRad = lat*Math.PI/180;
+  const lonRad = lon*Math.PI/180;
+  const lon0Rad = lon0*Math.PI/180;
+  const N = a/Math.sqrt(1 - e*e*Math.sin(latRad)*Math.sin(latRad));
+  const T = Math.tan(latRad)*Math.tan(latRad);
+  const C = (e*e)/(1-e*e) * Math.cos(latRad)*Math.cos(latRad);
+  const A = Math.cos(latRad)*(lonRad - lon0Rad);
+  const M = a*((1 - e*e/4 -3*e*e*e*e/64 -5*e*e*e*e*e*e/256)*latRad
+    - (3*e*e/8 +3*e*e*e*e/32 +45*e*e*e*e*e*e/1024)*Math.sin(2*latRad)
+    + (15*e*e*e*e/256 +45*e*e*e*e*e*e/1024)*Math.sin(4*latRad)
+    - (35*e*e*e*e*e*e/3072)*Math.sin(6*latRad));
+  const easting = k0*N*(A + (1-T+C)*Math.pow(A,3)/6 + (5-18*T+T*T+72*C-58*e*e/(1-e*e))*Math.pow(A,5)/120) + 500000;
+  let northing = k0*(M + N*Math.tan(latRad)*(A*A/2 + (5 - T +9*C +4*C*C)*Math.pow(A,4)/24 + (61 -58*T +T*T +600*C -330*e*e/(1-e*e))*Math.pow(A,6)/720));
+  const hemisphere = lat >=0 ? 'N':'S';
+  if(lat<0) northing +=10000000;
+  return {easting, northing, zone, hemisphere};
+}
+</script>
+
+</body>
+</html>
